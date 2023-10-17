@@ -1,0 +1,24 @@
+REPORT ZNAWAL_JOIN_TABLE1.
+
+TYPES : BEGIN OF ty_marc,
+       matnr TYPE marc-matnr,
+       werks TYPE marc-werks,
+  END OF ty_marc.
+
+ DATA st_marc TYPE ty_marc.
+ DATA v_name TYPE t001w-name1.
+PARAMETERS p_marc TYPE marc-matnr.
+
+
+      WRITE :/ 'MATERIAL NUMBER',
+             40 'PLANT NUMBER',
+             80 'PLANT NAME'.
+
+
+   SELECT matnr werks FROM marc INTO st_marc WHERE matnr EQ p_marc.
+   SELECT SINGLE name1 FROM t001w INTO v_name WHERE werks EQ st_marc-werks.
+
+    WRITE :/ st_marc-matnr,
+           40  st_marc-werks,
+           80  v_name.
+    ENDSELECT.

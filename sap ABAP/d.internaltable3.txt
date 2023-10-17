@@ -1,0 +1,60 @@
+REPORT ZNAWAL_INTERNALTABLE.
+TYPES :BEGIN OF ty_vbak,
+      vbeln TYPE vbak-vbeln,
+      audat TYPE vbak-audat,
+      netwr TYPE vbak-netwr,
+      kunnr TYPE vbak-kunnr,
+  END OF ty_vbak.
+
+  TYPES : BEGIN OF ty_vbap,
+         posnr TYPE vbap-posnr,
+         matnr TYPE vbap-matnr,
+         arktx TYPE vbap-arktx,
+         kwmeng TYPE vbap-kwmeng,
+         zieme TYPE vbap-zieme,
+         netwr TYPE vbap-netwr,
+    END OF ty_vbap.
+
+
+
+    DATA : it_vbak TYPE TABLE OF ty_vbak,
+           wa_vbak LIKE LINE OF it_vbak,
+           it_vbap TYPE TABLE OF vbap,
+           wa_vbap LIKE LINE OF it_vbap,
+           it_kna1 TYPE TABLE OF kna1-name1,
+           wa_kna1 LIKE LINE OF it_kna1.
+
+   PARAMETERS : p_docNum TYPE vbak-vbeln.
+
+      SELECT vbeln audat netwr kunnr FROM vbak INTO TABLE it_vbak WHERE vbeln EQ p_docNum.
+
+    LOOP AT it_vbak INTO wa_vbak.
+      SELECT SINGLE name1  FROM kna1 INTO wa_kna1 WHERE kunnr EQ wa_vbak-kunnr.
+
+      WRITE :/ 'Document Number :',wa_vbak-vbeln,
+             / 'Document date :',wa_vbak-audat,
+             / 'Net value :',wa_vbak-netwr,
+             /'sold to party :',wa_kna1.
+     ENDLOOP.
+
+
+       WRITE :/ 'Item',
+             20 'material',
+             35 'item discription',
+             60 'order quantity',
+             80 'uOM',
+             90 'Net value'.
+
+
+
+    SELECT posnr matnr arktx kwmeng zieme netwr FROM vbap INTO TABLE it_vbap WHERE vbeln EQ p_docNum.
+*      SELECT SINGLE mseht FROM t006a INTO v_desc WHERE spras EQ 'E' AND msehi EQ st_vbap-zieme.
+    LOOP AT it_vbap INTO wa_vbap.
+
+      WRITE :/  wa_vbap-posnr,
+            20  wa_vbap-matnr,
+            35  wa_vbap-arktx,
+            50  wa_vbap-kwmeng,
+            80  wa_vbap-zieme,
+            85  wa_vbap-netwr.
+      ENDLOOP.

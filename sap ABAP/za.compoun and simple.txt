@@ -1,0 +1,30 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_HOMEWORK2
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_HOMEWORK2.
+PARAMETERS p_amount TYPE p.
+PARAMETERS p_profit TYPE P.
+PARAMETERS p_days TYPE i.
+PARAMETERS p_check AS CHECKBOX.
+
+DATA simple_interest TYPE P.
+DATA compound_interest TYPE p.
+
+if p_check EQ 'X'.
+  simple_interest = p_amount * P_days * P_profit .
+  WRITE : /'initial amount',p_amount,
+        /'total days',p_days,
+        /'simple interest:',simple_interest.
+ELSE.
+*  compound_interest = p_amount * ( ( 1 + ( p_profit / 100 ) ) ** ( p_days - 1 ) )  .
+  compound_interest = p_amount.
+  DO p_days TIMES.
+    compound_interest = compound_interest * ( 1 + ( P_profit / 100 ) ).
+  ENDDO.
+
+  WRITE : /'initial amount',p_amount,
+        /'total days',p_days,
+        /'compound interest:',compound_interest.
+ENDIF.

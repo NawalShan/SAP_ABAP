@@ -1,0 +1,25 @@
+REPORT ZNAWAL_JOIN_TABLE.
+
+TYPES : BEGIN OF ty_naw_table,
+        emp_id TYPE znawal_table-emp_id,
+        name TYPE znawal_table-name,
+        salary TYPE znawal_table-salary,
+        dept_id TYPE znawal_table-dept_id,
+  END OF ty_naw_table.
+
+  DATA st_nawa_struc TYPE ty_naw_table.
+
+  PARAMETERS p_empid TYPE znawal_table-emp_id.
+
+  SELECT emp_id name salary dept_id from znawal_table INTO st_nawa_struc WHERE emp_id EQ p_empid.
+
+    DATA v_desc TYPE znawal_dept-dept_desc.
+
+     SELECT SINGLE dept_desc FROM znawal_dept INTO v_desc WHERE dept_id EQ st_nawa_struc-dept_id.
+
+       WRITE : st_nawa_struc-emp_id,
+               st_nawa_struc-name,
+               st_nawa_struc-salary,
+               st_nawa_struc-dept_id,
+               v_desc.
+         ENDSELECT.

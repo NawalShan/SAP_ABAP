@@ -1,0 +1,10 @@
+REPORT ZNAWAL_UST_TWO.
+TYPES ty_name TYPE c LENGTH 30.
+DATA :N_name TYPE ty_name,
+      V_name TYPE ty_name.
+
+V_name ='hello'.
+N_name ='nawal Asiya AT'.
+
+WRITE V_name.
+WRITE N_name.
