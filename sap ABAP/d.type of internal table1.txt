@@ -1,0 +1,145 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_TYPESOFINTERNALTABLE1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_TYPESOFINTERNALTABLE1.
+***---------------------------STANDARD INTERNAL TABLE-------------------------***
+*TYPES : BEGIN OF ty_makt,
+*  matnr TYPE makt-matnr,
+*  spras TYPE makt-spras,
+*  maktx TYPE makt-maktx,
+*  END OF ty_makt.
+*
+*DATA : it_makt TYPE TABLE OF ty_makt ,
+*      wa_makt LIKE LINE OF it_makt.
+*
+*wa_makt-matnr = '100'.
+*wa_makt-spras = 'E'.
+*wa_makt-maktx = 'book'.
+*APPEND wa_makt to it_makt.
+*
+*wa_makt-matnr = '300'.
+*wa_makt-spras = 'E'.
+*wa_makt-maktx = 'pen'.
+*APPEND wa_makt to it_makt.
+*
+*wa_makt-matnr = '200'.
+*wa_makt-spras = 'E'.
+*wa_makt-maktx = 'pencil'.
+*APPEND wa_makt to it_makt.
+*
+* *READ TABLE it_makt INTO wa_makt INDEX 1.
+*READ TABLE it_makt INTO wa_makt WITH KEY matnr = '200' spras = 'e' BINARY SEARCH.
+*WRITE wa_makt.
+
+
+
+
+
+**TYPES : BEGIN OF ty_makt,
+**  matnr TYPE makt-matnr,
+**  spras TYPE makt-spras,
+**  maktx TYPE makt-maktx,
+**  END OF ty_makt.
+**
+**DATA : it_makt TYPE TABLE OF ty_makt ,
+**      wa_makt LIKE LINE OF it_makt.
+**
+**wa_makt-matnr = '100'.
+**wa_makt-spras = 'E'.
+**wa_makt-maktx = 'book'.
+**insert wa_makt INTO TABLE it_makt.
+**
+**wa_makt-matnr = '300'.
+**wa_makt-spras = 'E'.
+**wa_makt-maktx = 'pen'.
+**insert wa_makt INTO TABLE it_makt.
+**
+**wa_makt-matnr = '200'.
+**wa_makt-spras = 'E'.
+**wa_makt-maktx = 'pencil'.
+**insert wa_makt INTO TABLE it_makt.
+**
+**SORT it_makt BY matnr spras.
+**READ TABLE it_makt INTO wa_makt WITH KEY matnr = '200' spras = 'e' BINARY SEARCH.
+**
+**WRITE wa_makt.
+
+
+
+***---------------------------SORTED INTERNAL TABLE----------------------------***
+***
+***TYPES : BEGIN OF ty_makt,
+***  matnr TYPE makt-matnr,
+***  spras TYPE makt-spras,
+***  maktx TYPE makt-maktx,
+***  END OF ty_makt.
+***
+***DATA : it_makt TYPE SORTED TABLE OF ty_makt WITH UNIQUE KEY matnr,
+***      wa_makt LIKE LINE OF it_makt.
+***
+***wa_makt-matnr = '100'.
+***wa_makt-spras = 'E'.
+***wa_makt-maktx = 'book'.
+***insert wa_makt INTO TABLE it_makt.
+***
+***wa_makt-matnr = '300'.
+***wa_makt-spras = 'E'.
+***wa_makt-maktx = 'pen'.
+***insert wa_makt INTO TABLE it_makt.
+***
+***wa_makt-matnr = '200'.
+***wa_makt-spras = 'E'.
+***wa_makt-maktx = 'pencil'.
+***insert wa_makt INTO TABLE it_makt.
+***
+***READ TABLE it_makt INTO wa_makt WITH KEY matnr = '200' spras = 'e'.
+***
+***WRITE wa_makt.
+
+
+
+***----------------------HASHED INTERNAL TABLE-------------------------------***
+
+
+
+TYPES : BEGIN OF ty_makt,
+  matnr TYPE makt-matnr,
+  spras TYPE makt-spras,
+  maktx TYPE makt-maktx,
+  END OF ty_makt.
+
+
+
+DATA : it_makt TYPE HASHED TABLE OF ty_makt WITH UNIQUE KEY matnr,
+      wa_makt LIKE LINE OF it_makt.
+
+
+
+wa_makt-matnr = '100'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'book'.
+insert wa_makt INTO TABLE it_makt.
+
+
+
+wa_makt-matnr = '300'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'pen'.
+insert wa_makt INTO TABLE it_makt.
+
+
+
+wa_makt-matnr = '200'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'pencil'.
+insert wa_makt INTO TABLE it_makt.
+
+
+
+SORT it_makt BY matnr spras.
+READ TABLE it_makt INTO wa_makt WITH KEY matnr = '200' spras = 'e' .
+*LOOP AT it_makt into wa_makt.
+WRITE wa_makt.
+*ENDLOOP.

@@ -1,0 +1,13 @@
+REPORT ZNAWAL_DATABASE_VIEW.
+
+
+DATA : it_dbtable TYPE STANDARD TABLE OF ZNAWAL_DB_VIEW,
+       wa_dbtable LIKE LINE OF it_dbtable.
+
+SELECT-OPTIONS s_matnr FOR wa_dbtable-matnr.
+
+SELECT * FROM ZNAWAL_DB_VIEW INTO TABLE it_dbtable WHERE matnr IN s_matnr.
+
+  LOOP AT it_dbtable INTO wa_dbtable.
+    WRITE : / wa_dbtable-matnr,40 wa_dbtable-werks, 80 wa_dbtable-name1.
+    ENDLOOP.
