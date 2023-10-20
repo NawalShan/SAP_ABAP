@@ -1,0 +1,56 @@
+REPORT ZNAWAL_HOMEWORK1.
+TYPES :BEGIN OF ty_vbak,
+      vbeln TYPE vbak-vbeln,
+      audat TYPE vbak-audat,
+      netwr TYPE vbak-netwr,
+      kunnr TYPE vbak-kunnr,
+  END OF ty_vbak.
+
+  TYPES : BEGIN OF ty_vbap,
+         posnr TYPE vbap-posnr,
+         matnr TYPE vbap-matnr,
+         arktx TYPE vbap-arktx,
+         kwmeng TYPE vbap-kwmeng,
+         zieme TYPE vbap-zieme,
+         netwr TYPE vbap-netwr,
+    END OF ty_vbap.
+
+
+
+    DATA : st_vbap TYPE ty_vbap,
+           st_vbak TYPE ty_vbak,
+          v_name1 TYPE kna1-name1,
+          v_desc TYPE  t006A-MSEHL.
+
+
+    PARAMETERS : p_docNum TYPE vbak-vbeln.
+
+
+    SELECT SINGLE vbeln audat netwr kunnr FROM  vbak INTO st_vbak WHERE vbeln EQ p_docNum.
+    SELECT SINGLE name1 FROM kna1 INTO v_name1 WHERE kunnr EQ st_vbak-kunnr.
+      WRITE :/ 'Document Number :',st_vbak-vbeln,
+             / 'Document date :',st_vbak-audat,
+             / 'Net value :',st_vbak-netwr,
+             /'sold to party :',v_name1.
+
+
+       WRITE :/ 'Item',
+             20 'material',
+             35 'item discription',
+             60 'order quantity',
+             80 'uOM',
+             90 'Net value'.
+
+
+
+    SELECT posnr matnr arktx kwmeng zieme netwr FROM vbap INTO st_vbap WHERE vbeln EQ p_docNum.
+      SELECT SINGLE mseht FROM t006a INTO v_desc WHERE spras EQ 'E' AND msehi EQ st_vbap-zieme.
+
+
+      WRITE :/  st_vbap-posnr,
+            20  st_vbap-matnr,
+            35  st_vbap-arktx,
+            50  st_vbap-kwmeng,
+            80  v_desc,
+            85  st_vbap-netwr.
+      ENDSE

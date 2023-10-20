@@ -1,0 +1,139 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_TYPESOFINTERNALTABLE
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_TYPESOFINTERNALTABLE.
+TYPES : BEGIN OF ty_makt,
+    matnr TYPE makt-matnr,
+    spras TYPE makt-spras,
+    maktx TYPE makt-maktx,
+  END OF ty_makt.
+
+
+
+DATA : it_makt TYPE table of ty_makt,  "TYPE STANDARD TABLE OF
+      wa_makt like LINE OF it_makt.
+
+
+
+wa_makt-matnr = '100'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'Pen'.
+INSERT wa_makt INTO TABLE it_makt.
+
+
+
+wa_makt-matnr = '300'.
+wa_makt-spras = 'EN'.
+wa_makt-maktx = 'Pencil'.
+INSERT wa_makt INTO TABLE it_makt.
+
+
+
+wa_makt-matnr = '200'.
+wa_makt-spras = 'D'.
+wa_makt-maktx = 'Pen'.
+INSERT wa_makt INTO TABLE it_makt.
+
+
+
+clear wa_makt.
+
+
+
+WRITE : / 'Material Number',
+         30 'Spras',
+         50 'Maktx'.
+
+
+
+sort it_makt by matnr.
+
+
+
+loop at it_makt into wa_makt.
+  WRITE : / wa_makt-matnr,
+           30  wa_makt-spras,
+           50 wa_makt-maktx.
+ENDLOOP.
+
+
+
+
+
+*TYPES : BEGIN OF ty_makt,
+*    matnr TYPE makt-matnr,
+*    spras TYPE makt-spras,
+*    maktx TYPE makt-maktx,
+*  END OF ty_makt.
+*
+*DATA : it_makt TYPE SORTED TABLE OF ty_makt with UNIQUE key matnr, "not unique key
+*      wa_makt like LINE OF it_makt.
+*
+*wa_makt-matnr = '100'.
+*wa_makt-spras = 'E'.
+*wa_makt-maktx = 'Pen'.
+*INSERT wa_makt INTO TABLE it_makt.
+*
+*wa_makt-matnr = '300'.
+*wa_makt-spras = 'D'.
+*wa_makt-maktx = 'Pencil'.
+*INSERT wa_makt INTO TABLE it_makt.
+*
+*wa_makt-matnr = '200'.
+*wa_makt-spras = 'EN'.
+*wa_makt-maktx = 'Pen-Pencil'.
+*INSERT wa_makt INTO TABLE it_makt.
+*
+*clear wa_makt.
+*
+*WRITE : / 'Material Number',
+*         30 'Spras',
+*         50 'Maktx'.
+*
+*loop at it_makt into wa_makt.
+*  WRITE : / wa_makt-matnr,
+*           30  wa_makt-spras,
+*           50 wa_makt-maktx.
+*ENDLOOP.
+
+
+
+
+
+*TYPES : BEGIN OF ty_makt,
+*    matnr TYPE makt-matnr,
+*    spras TYPE makt-spras,
+*    maktx TYPE makt-maktx,
+*  END OF ty_makt.
+*
+*DATA : it_makt TYPE HASHED TABLE OF ty_makt WITH UNIQUE KEY matnr spras,
+*      wa_makt like LINE OF it_makt.
+*
+*wa_makt-matnr = '100'.
+*wa_makt-spras = 'E'.
+*wa_makt-maktx = 'Pen'.
+*INSERT wa_makt INTO TABLE it_makt.
+*
+*wa_makt-matnr = '300'.
+*wa_makt-spras = 'EN'.
+*wa_makt-maktx = 'Pencil'.
+*INSERT wa_makt INTO TABLE it_makt.
+*
+*wa_makt-matnr = '200'.
+*wa_makt-spras = 'D'.
+*wa_makt-maktx = 'Pen'.
+*INSERT wa_makt INTO TABLE it_makt.
+*
+*clear wa_makt.
+*
+*WRITE : / 'Material Number',
+*         30 'Spras',
+*         50 'Maktx'.
+*
+*loop at it_makt into wa_makt.
+*  WRITE : / wa_makt-matnr,
+*           30  wa_makt-spras,
+*           50 wa_makt-maktx.
+*ENDLOOP.

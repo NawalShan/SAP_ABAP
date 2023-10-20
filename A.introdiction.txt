@@ -1,0 +1,38 @@
+REPORT ZNAWAL_UST.
+*name
+DATA V_name TYPE c LENGTH 10.
+V_name ='Nawal'.
+*integer
+DATA value TYPE i.
+value ='20'.
+*decimal
+DATA dvalue TYPE p.
+dvalue ='10.32'.
+*float
+DATA fvalue TYPE f.
+fvalue ='10.322323'.
+*date
+DATA : date TYPE D,
+       out TYPE c LENGTH 9.
+
+date ='20231010'.
+WRITE date TO out.
+
+*time
+DATA time TYPE t.
+time ='13:23'.
+WRITE V_name.
+WRITE value.
+WRITE dvalue.
+WRITE fvalue.
+WRITEout.
+WRITE time.
+elementary type
+DATA :N_name TYPE Znawal_name,
+      V_name TYPE Znawal_name.
+
+V_name ='Nawal'.
+N_name ='nawal Asiya AT'.
+
+WRITE V_name.
+WRITE N_name.
