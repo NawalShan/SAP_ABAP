@@ -1,0 +1,33 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_HOMEWORK4
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_HOMEWORK4.
+
+TYPES: BEGIN OF ty_range,
+  sign TYPE c length 1,
+  opti TYPE c length 2,
+  low  TYPE werks_d,
+  high TYPE werks_d,
+  END OF ty_range.
+
+
+DATA : it_dbtable TYPE STANDARD TABLE OF ZNAWAL_DB_VIEW,
+       wa_dbtable LIKE LINE OF it_dbtable,
+       it_cktable TYPE STANDARD TABLE OF znawal_plant_lim,
+       wa_cktable LIKE LINE OF it_cktable.
+DATA :it_range TYPE TABLE OF ty_range.
+
+SELECT-OPTIONS s_werks FOR wa_dbtable-werks.
+SELECT * FROM ZNAWAL_DB_VIEW INTO TABLE it_dbtable WHERE werks IN s_werks.
+ SELECT sign opti low high FROM znawal_plant_lim INTO TABLE it_range WHERE name EQ 'CHECK_PLAN'.
+
+ LOOP AT it_dbtable INTO wa_dbtable.
+
+IF wa_dbtable-werks IN it_range.
+    FORMAT COLOR COL_POSITIVE.
+ENDIF.
+
+WRITE : / wa_dbtable-matnr, 40 wa_dbtable-werks, 120 wa_dbtable-name1.
+FORMAT COLOR OFF.
+
+ENDLOOP.

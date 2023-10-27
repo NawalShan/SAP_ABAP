@@ -1,0 +1,49 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_EVENTBLOCKS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_EVENTBLOCKS.
+
+
+DATA v_maktx TYPE maktx.
+PARAMETERS p_matnr TYPE matnr DEFAULT 'MN100'.
+PARAMETERS p_date TYPE sy-datum.
+PARAMETERS p_setl AS CHECKBOX.
+
+START-OF-SELECTION.
+DATA v_name TYPE c LENGTH 15.
+DATA v_naam TYPE c LENGTH 30.
+SELECT SINGLE maktx FROM makt INTO v_maktx WHERE matnr EQ p_matnr.
+PERFORM view_output.
+PERFORM display.
+END-OF-SELECTION.
+
+WRITE v_maktx.
+
+FORM view_output.
+  v_name = 'NAWAL ASIYA AT'.
+  WRITE :/ v_name.
+  ENDFORM.
+
+  FORM display.
+    v_naam ='WORKS AS DEVELOPER IN UST'.
+    WRITE V_naam.
+    ENDFORM.
+*
+AT LINE-SELECTION.
+  WRITE 'from kasaragod'.
+* CALL SELECTION-SCREEN 1000.
+
+
+  AT SELECTION-SCREEN OUTPUT.
+  p_date = sy-datum.
+
+  LOOP AT SCREEN.
+    IF screen-name = 'p_setl'.
+     WRITE 'iam working'.
+    ENDIF.
+
+  ENDLOOP.
+
+

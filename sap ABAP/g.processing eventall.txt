@@ -1,0 +1,35 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_PROCESSING_BLOCK
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_PROCESSING_BLOCK.
+PARAMETERS p_matnr TYPE matnr.
+ 
+LOAD-OF-PROGRAM.
+WRITE : / 'Load of program'.
+ 
+INITIALIZATION.
+WRITE : / 'initialization'.
+ 
+START-OF-SELECTION.
+WRITE :  '  start-of-selection'.
+ 
+end-of-SELECTION.
+WRITE : / 'End-of-selection'.
+ 
+AT SELECTION-SCREEN.
+  WRITE : / 'At selection screen'.
+ 
+at SELECTION-SCREEN OUTPUT.
+  WRITE : / 'At selection screen output'.
+ 
+TOP-OF-PAGE.
+  WRITE : / 'top-of-page'.
+ 
+end-of-PAGE.
+  WRITE : / 'end-of-page'.
+ 
+AT LINE-SELECTION.
+  WRITE : / 'At line selection'.
+has context menu
