@@ -1,0 +1,87 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_HOMEWORK6_2
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_HOMEWORK6_2.
+TYPES: BEGIN  OF ty_vbap,
+  vbeln type vbap-vbeln,
+  posnr TYPE vbap-posnr,
+  pstyv TYPE vbap-pstyv,
+  arktx TYPE vbap-arktx,
+  kwmeng TYPE vbap-kwmeng,
+  zieme TYPE vbap-zieme,
+  netwr TYPE vbap-netwr,
+  END  OF ty_vbap.
+  TYPES :BEGIN OF ty_vbak,
+       vbeln TYPE vbak-vbeln,
+       audat TYPE vbak-audat,
+       netwr TYPE vbak-netwr,
+       kunnr type vbak-kunnr,
+END OF ty_vbak.
+TYPES : BEGIN OF ty_t006a,
+       msehi type t006a-msehi,
+       msehl type t006a-msehl,
+  END OF ty_t006a.
+  TYPES : BEGIN OF ty_kna1 ,
+    kunnr type kna1-kunnr,
+    name1 type kna1-name1,
+    END OF ty_kna1.
+
+    TYPES: BEGIN OF ty_range,
+  sign TYPE c length 1,
+  opti TYPE c length 2,
+  low  TYPE vbeln,
+  high TYPE vbeln,
+  END OF ty_range.
+
+  DATA :
+        it_vbak TYPE table of ty_vbak,
+        wa_vbak LIKE LINE OF it_vbak.
+
+
+
+
+
+
+TYPES : ty_it_vbak TYPE STANDARD TABLE OF ty_vbak,
+ty_it_kna1 TYPE STANDARD TABLE OF ty_kna1,
+ty_it_vbap TYPE STANDARD TABLE OF ty_vbap,
+ty_it_t006a TYPE STANDARD TABLE OF ty_t006a.
+TYPES: ty_p_s_num TYPE STANDARD TABLE OF ty_range.
+
+*SELECT-OPTIONS s_num FOR wa_vbak-vbeln.
+*&---------------------------------------------------------------------*
+*& Form header
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      --> S_NUM
+*&      <-- IT_VBAK
+*&      <-- IT_KNA1
+*&---------------------------------------------------------------------*
+
+
+FORM header  USING  p_s_num TYPE ty_p_s_num
+             CHANGING p_it_vbak TYPE ty_it_vbak
+                      p_it_kna1 TYPE ty_it_kna1.
+SELECT  vbeln audat netwr kunnr FROM vbak INTO TABLE p_it_vbak WHERE vbeln IN p_s_num.
+SELECT  kunnr name1 FROM kna1 INTO TABLE p_it_kna1 FOR ALL ENTRIES IN p_it_vbak WHERE kunnr EQ p_it_vbak-kunnr.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form items
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      --> V_VBELN
+*&      <-- IT_VBAP
+*&      <-- IT_T006A
+*&---------------------------------------------------------------------*
+FORM items  USING    p_v_vbeln TYPE vbap-vbeln
+            CHANGING p_it_vbap TYPE ty_it_vbap
+                     p_it_t006a TYPE ty_it_t006a.
+  SELECT  vbeln posnr pstyv arktx kwmeng zieme netwr FROM vbap INTO TABLE p_it_vbap WHERE vbeln EQ p_v_vbeln.
+SELECT msehi msehl FROM t006a INTO TABLE p_it_t006a FOR ALL ENTRIES IN p_it_vbap where spras Eq sy-langu AND msehi EQ p_it_vbap-zieme.
+
+ENDFORM.

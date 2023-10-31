@@ -1,0 +1,69 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_HOMEWORK6_HEADER1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_HOMEWORK6_HEADER1.
+
+  DATA : it_header TYPE znawal_it_header,
+        wa_header LIKE LINE OF it_header,
+
+        it_item TYPE znawal_it_item,
+        wa_item LIKE LINE OF it_item.
+
+SELECT-OPTIONS s_num FOR wa_header-vbeln.
+
+START-OF-SELECTION.
+
+PERFORM headers IN PROGRAM ZNAWAL_HOMEWORK6_HEADER2 USING s_num[] CHANGING it_header.
+
+END-OF-SELECTION.
+
+  LOOP AT it_header INTO wa_header.
+AT FIRST.
+   WRITE :/20 'Document Number',
+    40 'Doc Date',
+    70 'Net Val',
+    90 'Sold To Party'.
+   ENDAT.
+
+    WRITE : /20 wa_header-vbeln,
+            40 wa_header-audat,
+            60 wa_header-netwr,
+           90  wa_header-name1.
+
+  ENDLOOP.
+
+AT LINE-SELECTION.
+DATA : fnam(20),fval(50).
+DATA v_vbeln TYPE vbap-vbeln.
+GET CURSOR FIELD fnam VALUE fval.
+fnam = wa_header-vbeln.
+CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+  EXPORTING
+    input        = fval
+IMPORTING
+   OUTPUT        = v_vbeln
+          .
+clear it_item.
+
+PERFORM items IN PROGRAM ZNAWAL_HOMEWORK6_HEADER2 USING v_vbeln CHANGING it_item.
+
+LOOP AT it_item into wa_item.
+
+  AT FIRST.
+  WRITE :/ 'Item',
+       20 'Material',
+       35 'ItemDesc',
+60 'Order Qty' ,
+80 'UoM',
+100'NetVal'.
+  ENDAT.
+   WRITE : / wa_item-posnr,
+            20 wa_item-pstyv,
+            35  wa_item-arktx,
+            50 wa_item-kwmeng,
+            80 wa_item-msehl,
+            90 wa_item-netwr.
+
+   ENDLOOP.

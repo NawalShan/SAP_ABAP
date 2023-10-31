@@ -1,0 +1,54 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_FM_MAIN_CALL
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_FM_MAIN_CALL.
+DATA : it_header TYPE znawal_it_header,
+       wa_header LIKE LINE OF it_header,
+       it_item TYPE znawal_it_item,
+       wa_item LIKE LINE OF it_item.
+
+SELECT-OPTIONS s_num FOR wa_header-vbeln.
+
+
+START-OF-SELECTION.
+ CALL FUNCTION 'ZNAWAL_FM_SALES'
+
+      EXPORTING
+           im_s_num        = s_num[]
+      IMPORTING
+           EX_HEADER       = it_header.
+
+ CALL FUNCTION 'ZNAWAL_FM_HEADER_DISPLAY'
+
+   EXPORTING
+     im_it_header       = it_header.
+
+ END-OF-SELECTION.
+
+ AT LINE-SELECTION.
+  DATA : fnam(20),
+         fval(50),
+         v_vbeln TYPE vbap-vbeln.
+
+  GET CURSOR FIELD fnam VALUE fval.
+
+  CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+    EXPORTING
+      input  = fval
+    IMPORTING
+      output = v_vbeln.
+
+  CLEAR it_item.
+
+ CALL FUNCTION 'ZNAWAL_FM_ITEM'
+
+   EXPORTING
+     im_v_vbeln       = v_vbeln
+  IMPORTING
+    EX_ITEM          = it_item.
+
+ CALL FUNCTION 'ZNAWAL_FM_ITEM_DISPLAY'
+   EXPORTING
+     im_it_item       = it_item.
