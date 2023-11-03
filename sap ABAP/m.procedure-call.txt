@@ -1,0 +1,16 @@
+&---------------------------------------------------------------------
+& Report ZNAWAL_PROCEDURE_CALL
+&---------------------------------------------------------------------
+&
+&---------------------------------------------------------------------
+REPORT ZNAWAL_PROCEDURE_CALL.
+perform display in program ZNAWAL_PROCEDURE_MEMORY.
+SUBMIT ZNAWAL_PROCEDURE_MEMORY.
+DATA v_date TYPE sy-datum.
+v_date = sy-datum.
+write v_date.
+AT LINE-SELECTION.
+  EXPORT v_date TO MEMORY ID 'NAWAL'.
+  SET PARAMETER ID 'NAW' FIELD v_date.
+ SUBMIT ZNAWAL_PROCEDURE_MEMORY AND RETURN.
+ WRITE 'END'.

@@ -1,0 +1,33 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_PROCEDURE_MEMORY
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_PROCEDURE_MEMORY.
+
+
+*DATA v_date TYPE sy-datum.
+*INITIALIZATION.
+**LOAD-OF-PROGRAM.
+*v_date = sy-datum.
+*START-OF-SELECTION.
+*perform display.
+*
+**&---------------------------------------------------------------------*
+**& Form display
+**&---------------------------------------------------------------------*
+**& text
+**&---------------------------------------------------------------------*
+**& -->  p1        text
+**& <--  p2        text
+**&---------------------------------------------------------------------*
+*FORM display .
+*  WRITE v_date.
+*
+*ENDFORM.
+*DATA p_date TYPE sy-datum.
+*p_date = sy-datum.
+**IMPORT p_date FROM MEMORY ID 'NAWAL'.
+*GET PARAMETER ID 'NAW' FIELD p_date.
+*write p_date.
+WRITE 'haaaaaalooo'.

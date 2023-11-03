@@ -1,0 +1,24 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_MAKT_VALUE
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_MAKT_VALUE.
+DATA it_vbap TYPE TABLE OF vbap.
+DATA o_value TYPE REF TO CL_SALV_TABLE.
+
+SELECT * FROM vbap INTO TABLE it_vbap.
+
+  cl_SALV_TABLE=>factory(
+*    EXPORTING
+*      list_display   = if_salv_c_bool_sap=>false " ALV Displayed in List Mode
+*      r_container    =                           " Abstract Container for GUI Controls
+*      container_name =
+    IMPORTING
+      r_salv_table   = o_value                    " Basis Class Simple ALV Tables
+    CHANGING
+      t_table        = it_vbap
+  ).
+*  CATCH cx_salv_msg. " ALV: General Error Class with Message
+
+o_value->display( ).

@@ -1,0 +1,42 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_PP_ABAP
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_PP_ABAP.
+DATA v_doc TYPE i.
+DATA v_tag TYPE i.
+
+CALL FUNCTION 'ZNAWAL_FM_PP'
+ IMPORTING
+   NEXT_NUM       = v_doc
+          .
+
+CALL FUNCTION 'ZNAWAL_FM_PP'
+ IMPORTING
+   NEXT_NUM       = v_tag
+          .
+CALL FUNCTION 'ZNAWAL_FM_PP'
+ IMPORTING
+   NEXT_NUM       = v_tag
+          .
+
+CALL FUNCTION 'ZNAWAL_FM_PP'
+ IMPORTING
+   NEXT_NUM       = v_doc
+          .
+CALL FUNCTION 'ZNAWAL_FM_PP'
+ IMPORTING
+   NEXT_NUM       = v_tag
+          .
+CALL FUNCTION 'ZNAWAL_FM_PP'
+ IMPORTING
+   NEXT_NUM       = v_tag
+          .
+
+CALL FUNCTION 'ZNAWAL_FM_PP'
+ IMPORTING
+   NEXT_NUM       = v_doc
+          .
+
+WRITE v_doc.
