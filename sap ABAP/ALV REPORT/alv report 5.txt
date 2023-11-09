@@ -1,0 +1,110 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_SALV_TABLE4
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_SALV_TABLE4.
+CLASS lcl_salv_TABLE DEFINITION.
+  PUBLIC SECTION.
+  DATA it_vbak TYPE TABLE OF zvnawal_vbak.
+  DATA o_alv TYPE REF TO cl_salv_table.
+  METHODS get_data.
+  methods output.
+
+  PRIVATE SECTION.
+  METHODS set_header CHANGING o_head TYPE REF TO cl_salv_table.
+  METHODS set_footer CHANGING o_foot TYPE REF TO cl_salv_table.
+
+
+  ENDCLASS.
+
+  CLASS lcl_salv_TABLE IMPLEMENTATION.
+    METHOD get_data.
+      SELECT vbeln audat netwr kunnr INTO TABLE it_vbak FROM vbak.
+      ENDMETHOD.
+     METHOD output.
+      DATA: lx_msg TYPE REF TO cx_salv_msg.
+    TRY.
+        cl_salv_table=>factory(
+*          EXPORTING
+*            list_display   = if_salv_c_bool_sap=>false " ALV Displayed in List Mode
+*            r_container    =                           " Abstract Container for GUI Controls
+*            container_name =
+          IMPORTING
+            r_salv_table   =    o_alv                       " Basis Class Simple ALV Tables
+          CHANGING
+            t_table        = it_vbak
+        ).
+*        CATCH cx_salv_msg. " ALV: General Error Class with Message
+      CATCH cx_salv_msg INTO lx_msg.
+    ENDTRY.
+    o_alv->display( ).
+    ENDMETHOD.
+
+
+  METHOD set_header.
+
+    DATA: lo_header  TYPE REF TO cl_salv_form_layout_grid,
+          lo_h_label TYPE REF TO cl_salv_form_label,
+          lo_h_flow  TYPE REF TO cl_salv_form_layout_flow.
+
+    CREATE OBJECT lo_header.
+
+
+    lo_h_label = lo_header->create_label( row = 1 column = 1 ).
+    lo_h_label->set_text( 'Header in Bold' ).
+
+    lo_h_flow = lo_header->create_flow( row = 2  column = 1 ).
+    lo_h_flow->create_text( text = 'This is text of flow' ).
+
+    lo_h_flow = lo_header->create_flow( row = 3  column = 1 ).
+    lo_h_flow->create_text( text = 'Number of Records in the output' ).
+
+    lo_h_flow = lo_header->create_flow( row = 3  column = 2 ).
+    lo_h_flow->create_text( text = 20 ).
+
+    o_head->set_top_of_list( lo_header ).
+
+
+    o_head->set_top_of_list_print( lo_header ).
+    CALL METHOD me->set_header CHANGING o_head = o_alv.
+
+  ENDMETHOD.
+
+  METHOD set_footer.
+
+    DATA: lo_footer  TYPE REF TO cl_salv_form_layout_grid,
+          lo_f_label TYPE REF TO cl_salv_form_label,
+          lo_f_flow  TYPE REF TO cl_salv_form_layout_flow.
+
+    CREATE OBJECT lo_footer.
+
+    lo_f_label = lo_footer->create_label( row = 1 column = 1 ).
+    lo_f_label->set_text( 'Footer .. here it goes' ).
+
+    lo_f_flow = lo_footer->create_flow( row = 2  column = 1 ).
+    lo_f_flow->create_text( text = 'This is text of flow in footer' ).
+
+    lo_f_flow = lo_footer->create_flow( row = 3  column = 1 ).
+    lo_f_flow->create_text( text = 'Footer number' ).
+
+    lo_f_flow = lo_footer->create_flow( row = 3  column = 2 ).
+    lo_f_flow->create_text( text = 1 ).
+
+    o_foot->set_end_of_list( lo_footer ).
+
+    o_foot->set_end_of_list_print( lo_footer ).
+     CALL METHOD me->set_footer CHANGING o_foot = o_alv.
+
+  ENDMETHOD.
+
+
+    ENDCLASS.
+
+    DATA lo_value TYPE REF TO lcl_salv_table.
+
+    START-OF-SELECTION.
+    CREATE OBJECT lo_value.
+
+    lo_value->get_data( ).
+    lo_value->output( ).

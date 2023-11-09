@@ -1,0 +1,361 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_OOPS_ALV_SALES
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_OOPS_ALV_SALES.
+DATA : it_header TYPE znawal_it_header,
+       wa_header LIKE LINE OF it_header,
+
+       it_item   TYPE znawal_it_item,
+       wa_item   LIKE LINE OF it_item.
+
+DATA : it_fcat TYPE slis_t_fieldcat_alv,
+       lw_fcat LIKE LINE OF it_fcat,
+       v_layout TYPE SLIS_LAYOUT_ALV.
+
+SELECT-OPTIONS s_num FOR wa_header-vbeln.
+
+PARAMETERS:p_fm_alv RADIOBUTTON GROUP rv1,
+           p_oo_alv RADIOBUTTON GROUP rv1.
+
+
+  CALL FUNCTION 'ZNAWAL_FM_SALES'
+    EXPORTING
+      im_s_num  = s_num[]
+    IMPORTING
+      ex_header = it_header.
+
+ START-OF-SELECTION.
+
+PERFORM layout.
+*  PERFORM display_header.
+
+
+END-OF-SELECTION.
+  IF p_fm_alv IS NOT INITIAL.
+
+    PERFORM display_header.
+  ELSE.
+    PERFORM display_oo_alv.
+  ENDIF.
+
+
+*&---------------------------------------------------------------------*
+*& Form layout
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM layout .
+v_layout-zebra = 'X'.
+
+
+
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*& Form display_header
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM display_header .
+
+
+
+  lw_fcat-col_pos = 1.
+  lw_fcat-fieldname = 'vbeln'.
+  lw_fcat-tabname = 'it_header'.
+  lw_fcat-seltext_m = 'Document Number'.
+  lw_fcat-outputlen = 20.
+  APPEND lw_fcat TO it_fcat.
+
+  lw_fcat-col_pos = 2.
+  lw_fcat-fieldname = 'audat'.
+  lw_fcat-tabname = 'it_header'.
+  lw_fcat-seltext_m = 'Document Date'.
+  lw_fcat-outputlen = 20.
+  APPEND lw_fcat TO it_fcat.
+
+  lw_fcat-col_pos = 3.
+  lw_fcat-fieldname = 'netwr'.
+  lw_fcat-tabname = 'it_header'.
+  lw_fcat-seltext_m = 'Net Value'.
+  lw_fcat-outputlen = 20.
+  APPEND lw_fcat TO it_fcat.
+
+  lw_fcat-col_pos = 4.
+  lw_fcat-fieldname = 'name1'.
+  lw_fcat-tabname = 'it_header'.
+  lw_fcat-seltext_m = 'Sold To Party'.
+  lw_fcat-outputlen = 20.
+  APPEND lw_fcat TO it_fcat.
+
+  CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+    EXPORTING
+*     I_INTERFACE_CHECK       = ' '
+*     I_BYPASSING_BUFFER      = ' '
+*     I_BUFFER_ACTIVE         = ' '
+      i_callback_program      = 'ZNAWAL_OOPS_ALV_SALES'
+     I_CALLBACK_PF_STATUS_SET          = 'PF_STATUS'
+      i_callback_user_command = 'USER_COMMAND'
+*     I_CALLBACK_TOP_OF_PAGE  = ' '
+*     I_CALLBACK_HTML_TOP_OF_PAGE       = ' '
+*     I_CALLBACK_HTML_END_OF_LIST       = ' '
+*     I_STRUCTURE_NAME        =
+*     I_BACKGROUND_ID         = ' '
+*     I_GRID_TITLE            =
+*     I_GRID_SETTINGS         =
+     IS_LAYOUT               = v_layout
+      it_fieldcat             = it_fcat
+*     IT_EXCLUDING            =
+*     IT_SPECIAL_GROUPS       =
+*     IT_SORT                 =
+*     IT_FILTER               =
+*     IS_SEL_HIDE             =
+*     I_DEFAULT               = 'X'
+*     I_SAVE                  = ' '
+*     IS_VARIANT              =
+*     IT_EVENTS               =
+*     IT_EVENT_EXIT           =
+*     IS_PRINT                =
+*     IS_REPREP_ID            =
+*     I_SCREEN_START_COLUMN   = 0
+*     I_SCREEN_START_LINE     = 0
+*     I_SCREEN_END_COLUMN     = 0
+*     I_SCREEN_END_LINE       = 0
+*     I_HTML_HEIGHT_TOP       = 0
+*     I_HTML_HEIGHT_END       = 0
+*     IT_ALV_GRAPHICS         =
+*     IT_HYPERLINK            =
+*     IT_ADD_FIELDCAT         =
+*     IT_EXCEPT_QINFO         =
+*     IR_SALV_FULLSCREEN_ADAPTER        =
+*     O_PREVIOUS_SRAL_HANDLER =
+* IMPORTING
+*     E_EXIT_CAUSED_BY_CALLER =
+*     ES_EXIT_CAUSED_BY_USER  =
+    TABLES
+      t_outtab                = it_header
+    EXCEPTIONS
+      program_error           = 1
+      OTHERS                  = 2.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+  ENDIF.
+
+ENDFORM.
+
+FORM user_command  USING r_ucomm LIKE sy-ucomm
+                                   rs_selfield TYPE slis_selfield.
+  IF r_ucomm EQ '&IC1' AND rs_selfield-fieldname EQ 'vbeln'.
+
+    CLEAR it_item.
+    DATA : v_vbeln  TYPE vbap-vbeln.
+
+    v_vbeln = rs_selfield-value.
+    CALL FUNCTION 'ZNAWAL_FM_ITEM'
+      EXPORTING
+        IM_V_VBELN      = v_vbeln
+     IMPORTING
+       EX_ITEM        = it_item
+              .
+
+
+clear it_fcat.
+
+    lw_fcat-col_pos = 1.
+    lw_fcat-fieldname = 'posnr'.
+    lw_fcat-tabname = 'it_item'.
+    lw_fcat-seltext_m = 'item name'.
+    lw_fcat-outputlen = 20.
+    APPEND lw_fcat TO it_fcat.
+
+    lw_fcat-col_pos = 2.
+    lw_fcat-fieldname =  'pstyv'.
+    lw_fcat-tabname = 'it_item'.
+    lw_fcat-seltext_m = 'material'.
+    lw_fcat-outputlen = 20.
+    APPEND lw_fcat TO it_fcat.
+
+    lw_fcat-col_pos = 3.
+    lw_fcat-fieldname = 'arktx'.
+    lw_fcat-tabname = 'it_item'.
+    lw_fcat-seltext_m = 'Item description'.
+    lw_fcat-outputlen = 20.
+    APPEND lw_fcat TO it_fcat.
+
+    lw_fcat-col_pos = 4.
+    lw_fcat-fieldname = 'kwmeng'.
+    lw_fcat-tabname = 'it_item'.
+    lw_fcat-seltext_m = 'order qty'.
+    lw_fcat-outputlen = 20.
+    APPEND lw_fcat TO it_fcat.
+
+    lw_fcat-col_pos = 5.
+    lw_fcat-fieldname = 'msehi'.
+    lw_fcat-tabname = 'it_item'.
+    lw_fcat-seltext_m = 'Uom text'.
+    lw_fcat-outputlen = 20.
+    APPEND lw_fcat TO it_fcat.
+
+    lw_fcat-col_pos = 6.
+    lw_fcat-fieldname = 'netwr'.
+    lw_fcat-tabname = 'it_item'.
+    lw_fcat-seltext_m = 'Net value'.
+    lw_fcat-outputlen = 20.
+    APPEND lw_fcat TO it_fcat.
+
+    CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+      EXPORTING
+*       I_INTERFACE_CHECK       = ' '
+*       I_BYPASSING_BUFFER      = ' '
+*       I_BUFFER_ACTIVE         = ' '
+        i_callback_program      = 'ZNAWAL_OOPS_ALV_SALES'
+       I_CALLBACK_PF_STATUS_SET          = 'PF_STATUS'
+        i_callback_user_command = 'USER_COMMAND'
+*       I_CALLBACK_TOP_OF_PAGE  = ' '
+*       I_CALLBACK_HTML_TOP_OF_PAGE       = ' '
+*       I_CALLBACK_HTML_END_OF_LIST       = ' '
+*       I_STRUCTURE_NAME        =
+*       I_BACKGROUND_ID         = ' '
+*       I_GRID_TITLE            =
+*       I_GRID_SETTINGS         =
+       IS_LAYOUT               = v_layout
+        it_fieldcat             = it_fcat
+*       IT_EXCLUDING            =
+*       IT_SPECIAL_GROUPS       =
+*       IT_SORT                 =
+*       IT_FILTER               =
+*       IS_SEL_HIDE             =
+*       I_DEFAULT               = 'X'
+*       I_SAVE                  = ' '
+*       IS_VARIANT              =
+*       IT_EVENTS               =
+*       IT_EVENT_EXIT           =
+*       IS_PRINT                =
+*       IS_REPREP_ID            =
+*       I_SCREEN_START_COLUMN   = 0
+*       I_SCREEN_START_LINE     = 0
+*       I_SCREEN_END_COLUMN     = 0
+*       I_SCREEN_END_LINE       = 0
+*       I_HTML_HEIGHT_TOP       = 0
+*       I_HTML_HEIGHT_END       = 0
+*       IT_ALV_GRAPHICS         =
+*       IT_HYPERLINK            =
+*       IT_ADD_FIELDCAT         =
+*       IT_EXCEPT_QINFO         =
+*       IR_SALV_FULLSCREEN_ADAPTER        =
+*       O_PREVIOUS_SRAL_HANDLER =
+*   IMPORTING
+*       E_EXIT_CAUSED_BY_CALLER =
+*       ES_EXIT_CAUSED_BY_USER  =
+      TABLES
+        t_outtab                = it_item
+      EXCEPTIONS
+        program_error           = 1
+        OTHERS                  = 2.
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
+    ENDIF.
+
+  ENDIF.
+
+
+
+  IF r_ucomm EQ '&IC1' AND rs_selfield-fieldname EQ 'name1'.
+
+    DATA: v_name1 TYPE kna1-name1,
+          v_kunnr TYPE kna1-kunnr.
+ v_name1 = rs_selfield-value.
+    CALL FUNCTION 'ZNAWAL_FM_NAME1'
+      EXPORTING
+        im_name1 = v_name1
+      IMPORTING
+        ex_kunnr = v_kunnr.
+
+*    READ TABLE it_header INTO wa_header with key name1 = rs_selfield-value.
+
+
+    SET PARAMETER ID 'KUN' FIELD v_kunnr.
+    CALL TRANSACTION 'XD03' AND SKIP FIRST SCREEN.
+  ENDIF.
+
+
+
+ENDFORM.
+FORM PF_STATUS USING rt_extab TYPE slis_t_extab .
+  set PF-STATUS 'ALV'.
+
+  ENDFORM.
+  CLASS lcl_double DEFINITION.
+  PUBLIC SECTION.
+
+    METHODS doubleclick FOR EVENT double_click OF cl_salv_events_table IMPORTING row column.
+
+ENDCLASS.
+CLASS lcl_double IMPLEMENTATION.
+
+  METHOD doubleclick.
+    CLEAR it_item.
+    READ TABLE it_header INTO wa_header INDEX row.
+
+
+      CALL FUNCTION 'ZNAWAL_FM_ITEM'
+        EXPORTING
+          im_v_vbeln       = wa_header-vbeln
+       IMPORTING
+         EX_ITEM          = it_item
+                .
+      cl_salv_table=>factory(
+*        EXPORTING
+*          list_display   = if_salv_c_bool_sap=>false " ALV Displayed in List Mode
+*          r_container    =                           " Abstract Container for GUI Controls
+*          container_name =
+        IMPORTING
+          r_salv_table   =       DATA(o_alv1)                    " Basis Class Simple ALV Tables
+        CHANGING
+          t_table        = it_item
+      ).
+*      CATCH cx_salv_msg. " ALV: General Error Class with Message
+
+
+o_alv1->display( ).
+
+ENDMETHOD.
+ENDCLASS.
+*&---------------------------------------------------------------------*
+*& Form display_oo_alv
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM display_oo_alv .
+
+  DATA o_event TYPE REF TO lcl_double.
+
+  CREATE OBJECT o_event.
+
+  cl_salv_table=>factory(
+*    EXPORTING
+*      list_display   = if_salv_c_bool_sap=>false " ALV Displayed in List Mode
+*      r_container    =                           " Abstract Container for GUI Controls
+*      container_name =
+    IMPORTING
+      r_salv_table   = DATA(o_alv)                           " Basis Class Simple ALV Tables
+    CHANGING
+      t_table        = it_header
+  ).
+  DATA(o_event_value) = o_alv->get_event( ).
+  SET HANDLER o_event->doubleclick FOR o_event_value.
+*  CATCH cx_salv_msg. " ALV: General Error Class with Message
+  o_alv->display( ).
+
+ENDFORM.

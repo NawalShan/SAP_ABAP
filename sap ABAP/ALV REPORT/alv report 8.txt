@@ -1,0 +1,107 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_SALV_TABLE7
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_SALV_TABLE7.
+CLASS lcl_salv_TABLE DEFINITION.
+  PUBLIC SECTION.
+  DATA it_vbak TYPE TABLE OF zvnawal_vbak.
+  DATA o_alv TYPE REF TO cl_salv_table.
+  METHODS get_data.
+  methods output.
+
+  PRIVATE SECTION.
+     METHODS: set_hotspot_vbeln
+        CHANGING
+          co_alv   TYPE REF TO cl_salv_table
+          co_report TYPE REF TO lcl_salv_table.
+
+     METHODS: on_link_click
+        FOR EVENT link_click OF cl_salv_events_table
+          IMPORTING
+            row
+            column  .
+  ENDCLASS.
+
+  START-OF-SELECTION.
+    DATA lo_value TYPE REF TO lcl_salv_table.
+    CREATE OBJECT lo_value.
+
+    lo_value->get_data( ).
+    lo_value->output( ).
+
+  CLASS lcl_salv_TABLE IMPLEMENTATION.
+    METHOD get_data.
+      SELECT vbeln audat netwr kunnr INTO TABLE it_vbak FROM vbak.
+      ENDMETHOD.
+     METHOD output.
+      DATA: lx_msg TYPE REF TO cx_salv_msg.
+    TRY.
+        cl_salv_table=>factory(
+*          EXPORTING
+*            list_display   = if_salv_c_bool_sap=>false " ALV Displayed in List Mode
+*            r_container    =                           " Abstract Container for GUI Controls
+*            container_name =
+          IMPORTING
+            r_salv_table   =    o_alv                       " Basis Class Simple ALV Tables
+          CHANGING
+            t_table        = it_vbak
+        ).
+*        CATCH cx_salv_msg. " ALV: General Error Class with Message
+      CATCH cx_salv_msg INTO lx_msg.
+    ENDTRY.
+    o_alv->display( ).
+    ENDMETHOD.
+
+METHOD set_hotspot_vbeln.
+
+    DATA: lo_cols_tab TYPE REF TO cl_salv_columns_table,
+          lo_col_tab  TYPE REF TO cl_salv_column_table.
+
+    lo_cols_tab = co_alv->get_columns( ).
+
+*   Get VBELN column
+    TRY.
+        lo_col_tab ?= lo_cols_tab->get_column( 'VBELN' ).
+      CATCH cx_salv_not_found.
+    ENDTRY.
+
+*   Set the HotSpot for VBELN Column
+    TRY.
+        CALL METHOD lo_col_tab->set_cell_type
+          EXPORTING
+            value = if_salv_c_cell_type=>hotspot.
+        .
+      CATCH cx_salv_data_error .
+    ENDTRY.
+
+*...Events
+    DATA: lo_events TYPE REF TO cl_salv_events_table.
+
+*   all events
+    lo_events = o_alv->get_event( ).
+
+*   event handler
+    SET HANDLER co_report->on_link_click FOR lo_events.
+CALL METHOD set_hotspot_vbeln
+      CHANGING
+        co_alv    = o_alv
+        co_report = lo_value.
+  ENDMETHOD.
+
+* Handles the UI on the VBELN (HotSpot)
+  METHOD on_link_click.
+
+    DATA: la_vbak TYPE zvnawal_vbak.
+
+*   Get the Sales Order number from the table
+    READ TABLE lo_value->it_vbak INTO la_vbak INDEX row.
+    IF la_vbak-vbeln IS NOT INITIAL.
+      MESSAGE i398(00) WITH 'You have selected' la_vbak-vbeln.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+    ENDCLASS.

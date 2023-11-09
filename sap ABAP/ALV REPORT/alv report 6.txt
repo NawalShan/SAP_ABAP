@@ -1,0 +1,69 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_SALV_TABLE5
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_SALV_TABLE5.
+CLASS lcl_salv_TABLE DEFINITION.
+
+  PUBLIC SECTION.
+  DATA it_vbak TYPE TABLE OF zvnawal_vbak.
+  DATA o_alv TYPE REF TO cl_salv_table.
+  METHODS get_data.
+  methods output.
+
+  PRIVATE SECTION.
+  METHODS set_display CHANGING o_display TYPE REF TO cl_salv_table.
+
+  ENDCLASS.
+
+  CLASS lcl_salv_TABLE IMPLEMENTATION.
+    METHOD get_data.
+      SELECT vbeln audat netwr kunnr INTO TABLE it_vbak FROM vbak.
+      ENDMETHOD.
+     METHOD output.
+      DATA: lx_msg TYPE REF TO cx_salv_msg.
+    TRY.
+        cl_salv_table=>factory(
+*          EXPORTING
+*            list_display   = if_salv_c_bool_sap=>false " ALV Displayed in List Mode
+*            r_container    =                           " Abstract Container for GUI Controls
+*            container_name =
+          IMPORTING
+            r_salv_table   =    o_alv                       " Basis Class Simple ALV Tables
+          CHANGING
+            t_table        = it_vbak
+        ).
+*        CATCH cx_salv_msg. " ALV: General Error Class with Message
+      CATCH cx_salv_msg INTO lx_msg.
+    ENDTRY.
+    o_alv->display( ).
+    ENDMETHOD.
+
+METHOD set_display.
+
+    DATA: lo_display TYPE REF TO cl_salv_display_settings.
+
+*   get display object
+    lo_display = o_display->get_display_settings( ).
+
+*   set ZEBRA pattern
+    lo_display->set_striped_pattern( 'X' ).
+
+*   Title to ALV
+    lo_display->set_list_header( 'ALV Test for Display Settings' ).
+
+    CALL METHOD set_display CHANGING  o_display = o_alv.
+
+  ENDMETHOD.
+
+
+    ENDCLASS.
+
+    DATA lo_value TYPE REF TO lcl_salv_table.
+
+    START-OF-SELECTION.
+    CREATE OBJECT lo_value.
+
+    lo_value->get_data( ).
+    lo_value->output( ).
