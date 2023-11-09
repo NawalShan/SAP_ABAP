@@ -1,0 +1,29 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_OOP_EVENTS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_OOP_EVENTS.
+
+CLASS lcl_event_control DEFINITION.
+  PUBLIC SECTION.
+  METHODS catch_event FOR EVENT RAISE_DOUBLE_CLICK OF zcl_nawal_events.
+
+  ENDCLASS.
+
+  CLASS lcl_event_control IMPLEMENTATION.
+    METHOD catch_event.
+     CALL TRANSACTION 'MM03'.
+      ENDMETHOD.
+    ENDCLASS.
+
+    DATA o_emp TYPE REF TO zcl_nawal_events.
+    DATA o_event TYPE REF TO lcl_event_control.
+
+    START-OF-SELECTION.
+    CREATE OBJECT o_emp.
+    CREATE OBJECT o_event.
+
+SET HANDLER o_event->catch_event FOR o_emp.
+    o_emp->double_click( ).
+       WRITE 'end'.

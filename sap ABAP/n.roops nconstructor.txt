@@ -1,0 +1,37 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_OOP_CONSTRUCTOR
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_OOP_CONSTRUCTOR.
+CLASS lcl_employee DEFINITION.
+  PUBLIC SECTION.
+  DATA emp_id TYPE i.
+  DATA i_value TYPE i.
+  METHODS get_salary EXPORTING ex_sal TYPE i.
+  METHODS constructor IMPORTING emp_id LIKE i_value.
+  ENDCLASS.
+
+  CLASS lcl_employee IMPLEMENTATION.
+    METHOD get_salary.
+      SELECT SINGLE salary FROM znawal_table INTO ex_sal WHERE emp_id = emp_id.
+      ENDMETHOD.
+      METHOD constructor.
+     i_value = emp_id.
+      ENDMETHOD.
+    ENDCLASS.
+
+    DATA o_nawal TYPE REF TO lcl_employee.
+    DATA v_salary TYPE i.
+
+    START-OF-SELECTION.
+
+    CREATE OBJECT o_nawal.
+
+
+
+
+    o_nawal->get_salary(
+      IMPORTING
+        ex_sal = v_salary
+    ).

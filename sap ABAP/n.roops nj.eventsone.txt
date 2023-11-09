@@ -1,0 +1,15 @@
+&---------------------------------------------------------------------
+& Report ZNAWAL_OOP_EVENTSONE
+&---------------------------------------------------------------------
+&
+&---------------------------------------------------------------------
+REPORT ZNAWAL_OOP_EVENTSONE.
+
+DATA o_emp TYPE REF TO Zcl_nawal_EVENTS.
+DATA o_event TYPE REF TO zcl_nawal_eventsone.
+
+CREATE OBJECT o_emp.
+CREATE OBJECT o_event.
+
+SET HANDLER o_event-emp_name for o_emp.
+o_emp-double_click( ).

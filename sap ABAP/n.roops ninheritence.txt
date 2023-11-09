@@ -1,0 +1,18 @@
+*&---------------------------------------------------------------------*
+*& Report ZNAWAL_OOP_INHERITENCE
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZNAWAL_OOP_INHERITENCE.
+
+DATA :o_sup TYPE REF TO ZCL_NAWAL_SUPCLASS,
+      o_sub TYPE REF TO ZCL_NAWAL_SUBCLAS.
+
+CREATE OBJECT : o_sup, o_sub.
+o_sup = o_sub.
+o_sup->get_mileage( ).
+o_sub->get_mileage( ).
+o_sub->get_seat( ).
+o_sub ?= o_super.
+
+WRITE 'end'.
